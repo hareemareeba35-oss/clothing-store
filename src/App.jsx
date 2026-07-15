@@ -210,7 +210,7 @@ function App() {
       {/* Hero Section */}
 <section className="relative w-full overflow-hidden">
  <img
-  src="/coord1.png"
+  src="/coord1.png.png"
   alt="LA-ROSE Banner"
 className="w-full h-[220px] sm:h-[320px] md:h-[450px] lg:h-[550px] object-cover"
 />
