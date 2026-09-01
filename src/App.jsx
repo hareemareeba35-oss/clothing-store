@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import ProductDetail from './ProductDetail';
 
 function App() {
   const [activeTab, setActiveTab] = useState('All'); 
@@ -10,59 +12,413 @@ function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false); 
   const [showSuccess, setShowSuccess] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const [selectedSizes, setSelectedSizes] = useState({});
 
+  // Works both locally and on GitHub Pages (/clothing-store/).
+  const appBase =
+    import.meta.env.BASE_URL !== '/'
+      ? import.meta.env.BASE_URL.replace(/\/$/, '')
+      : window.location.hostname.endsWith('github.io')
+        ? '/clothing-store'
+        : '';
+
+  const getImagePath = (imagePath) => {
+    if (!imagePath) return '';
+    if (/^https?:\/\//i.test(imagePath)) return imagePath;
+    return `${appBase}/${imagePath.replace(/^\/+/, '')}`;
+  };
+
   // Restored your original working file paths and extensions exactly as they were
   const allProducts = [
-    // === WOMEN MAIN CATEGORY ===
-   { id: 1, name: "Luxury Linen Co-ords (Design 1)", mainCat: "Women", subCat: "Coords", price: 3500, img: "/suit1.jpg.png", hasSizes: true },
+  // === WOMEN MAIN CATEGORY ===
 
-{ id: 2, name: "Premium Summer Co-ords (Design 2)", mainCat: "Women", subCat: "Coords", price: 3800, img: "/suit2.jpg.png", hasSizes: true },
+  {
+    id: 1,
+    productId: "JLU264553U",
+    name: "Green Lawn Printed Unstitched 3pc",
+    mainCat: "Women",
+    subCat: "Coords",
+    price: 4590,
+    img: "/suit1.jpg.png",
+    hasSizes: true,
+    fabric: "Lawn",
+    season: "Summer Collection",
+    details: {
+      shirt: "Printed Lawn Shirt: 3 Meters",
+      dupatta: "Printed Lawn Dupatta: 2.5 Meters",
+      trouser: "Dyed Lawn Trouser: 2.5 Meters",
+      addon: "4 Yards Lace"
+    }
+  },
 
-{ id: 3, name: "Elegant Party Co-ords (Design 3)", mainCat: "Women", subCat: "Coords", price: 4200, img: "/suit3.jpg.png", hasSizes: true },
+  {
+    id: 2,
+    productId: "JLU264554U",
+    name: "Premium Summer Co-ords (Design 2)",
+    mainCat: "Women",
+    subCat: "Coords",
+    price: 3800,
+    img: "/suit2.jpg.png",
+    hasSizes: true,
+    fabric: "Lawn",
+    season: "Summer Collection",
+    details: {
+      shirt: "Printed Lawn Shirt: 3 Meters",
+      dupatta: "Printed Lawn Dupatta: 2.5 Meters",
+      trouser: "Dyed Lawn Trouser: 2.5 Meters",
+      addon: "4 Yards Lace"
+    }
+  },
 
-{ id: 4, name: "Classic Embroidered Unstitched Fabric", mainCat: "Women", subCat: "Unstitched", price: 2900, img: "/unstitched1.png.png", hasSizes: false },
+  {
+    id: 3,
+    productId: "JLU264555U",
+    name: "Elegant Party Co-ords (Design 3)",
+    mainCat: "Women",
+    subCat: "Coords",
+    price: 4200,
+    img: "/suit3.jpg.png",
+    hasSizes: true,
+    fabric: "Lawn",
+    season: "Summer Collection",
+    details: {
+      shirt: "Printed Lawn Shirt: 3 Meters",
+      dupatta: "Printed Lawn Dupatta: 2.5 Meters",
+      trouser: "Dyed Lawn Trouser: 2.5 Meters",
+      addon: "4 Yards Lace"
+    }
+  },
 
-{ id: 5, name: "Luxury Lawn Unstitched Suit", mainCat: "Women", subCat: "Unstitched", price: 3400, img: "/unstitched2.png.png", hasSizes: false },
+  {
+    id: 4,
+    productId: "JLU264556U",
+    name: "Classic Embroidered Unstitched Fabric",
+    mainCat: "Women",
+    subCat: "Unstitched",
+    price: 2900,
+    img: "/unstitched1.png.png",
+    hasSizes: false,
+    fabric: "Lawn",
+    season: "Summer Collection",
+    details: {
+      shirt: "Printed Lawn Shirt: 3 Meters",
+      dupatta: "Printed Lawn Dupatta: 2.5 Meters",
+      trouser: "Dyed Lawn Trouser: 2.5 Meters",
+      addon: "4 Yards Lace"
+    }
+  },
 
-{ id: 6, name: "Digital Printed Unstitched Dress", mainCat: "Women", subCat: "Unstitched", price: 3100, img: "/unstitched3.png.png", hasSizes: false },
+  {
+    id: 5,
+    productId: "JLU264557U",
+    name: "Luxury Lawn Unstitched Suit",
+    mainCat: "Women",
+    subCat: "Unstitched",
+    price: 3400,
+    img: "/unstitched2.png.png",
+    hasSizes: false,
+    fabric: "Lawn",
+    season: "Summer Collection",
+    details: {
+      shirt: "Printed Lawn Shirt: 3 Meters",
+      dupatta: "Printed Lawn Dupatta: 2.5 Meters",
+      trouser: "Dyed Lawn Trouser: 2.5 Meters",
+      addon: "4 Yards Lace"
+    }
+  },
 
-{ id: 7, name: "Premium Festive Unstitched Collection", mainCat: "Women", subCat: "Unstitched", price: 4500, img: "/unstitched4.png.png", hasSizes: false },
+  {
+    id: 6,
+    productId: "JLU264558U",
+    name: "Digital Printed Unstitched Dress",
+    mainCat: "Women",
+    subCat: "Unstitched",
+    price: 3100,
+    img: "/unstitched3.png.png",
+    hasSizes: false,
+    fabric: "Lawn",
+    season: "Summer Collection",
+    details: {
+      shirt: "Printed Lawn Shirt: 3 Meters",
+      dupatta: "Printed Lawn Dupatta: 2.5 Meters",
+      trouser: "Dyed Lawn Trouser: 2.5 Meters",
+      addon: "4 Yards Lace"
+    }
+  },
 
-{ id: 8, name: "Ready To Wear Pret Kurti", mainCat: "Women", subCat: "Ready to Wear", price: 3900, img: "/ready1.png.png", hasSizes: true },
+  {
+    id: 7,
+    productId: "JLU264559U",
+    name: "Premium Festive Unstitched Collection",
+    mainCat: "Women",
+    subCat: "Unstitched",
+    price: 4500,
+    img: "/unstitched4.png.png",
+    hasSizes: false,
+    fabric: "Lawn",
+    season: "Summer Collection",
+    details: {
+      shirt: "Printed Lawn Shirt: 3 Meters",
+      dupatta: "Printed Lawn Dupatta: 2.5 Meters",
+      trouser: "Dyed Lawn Trouser: 2.5 Meters",
+      addon: "4 Yards Lace"
+    }
+  },
 
-{ id: 9, name: "Pret Casual Wear Suit", mainCat: "Women", subCat: "Ready to Wear", price: 4200, img: "/ready2.png.png", hasSizes: true },
+  {
+    id: 8,
+    productId: "JLU264560U",
+    name: "Ready To Wear Pret Kurti",
+    mainCat: "Women",
+    subCat: "Ready to Wear",
+    price: 3900,
+    img: "/ready1.png.png",
+    hasSizes: true,
+    fabric: "Lawn",
+    season: "Summer Collection",
+    details: {
+      shirt: "Ready To Wear Lawn Shirt",
+      dupatta: "Printed Lawn Dupatta",
+      trouser: "Dyed Lawn Trouser",
+      addon: "4 Yards Lace"
+    }
+  },
 
-{ id: 10, name: "Designer Ready To Wear Set", mainCat: "Women", subCat: "Ready to Wear", price: 4800, img: "/ready3.png.png", hasSizes: true },
-    // === MEN MAIN CATEGORY ===
-    { id: 15, name: "Men Premium Stitched Kurta (Navy)", mainCat: "Men", subCat: "Stitched", price: 3500, img: "/men_stitched1.png.png", hasSizes: true },
-    { id: 16, name: "Men Luxury Shalwar Kameez (White)", mainCat: "Men", subCat: "Stitched", price: 4500, img: "/men_stitched2.png.png", hasSizes: true },
-    { id: 17, name: "Men Designer Stitched Suit (Black)", mainCat: "Men", subCat: "Stitched", price: 4200, img: "/men_stitched3.png.png", hasSizes: true },
-    
-    { id: 18, name: "Men Unstitched Soft Summer Cotton", mainCat: "Men", subCat: "Unstitched", price: 3200, img: "/men_unstitched1.png.png", hasSizes: false },
-    { id: 19, name: "Men Unstitched Premium Wash & Wear", mainCat: "Men", subCat: "Unstitched", price: 3800, img: "/men_unstitched2.png.png", hasSizes: false },
-    
-    { id: 20, name: "Men Winter Woolen Shawl Kurta", mainCat: "Men", subCat: "Winter Collection", price: 4800, img: "/men_winter1.png.png", hasSizes: true },
-    { id: 21, name: "Men Premium Winter Khaddar Suit", mainCat: "Men", subCat: "Winter Collection", price: 4100, img: "/men_winter2.png.png", hasSizes: true },
-    { id: 22, name: "Men Imperial Winter Tweed Suit", mainCat: "Men", subCat: "Winter Collection", price: 5200, img: "/men_winter3.png.png", hasSizes: true },
+  {
+    id: 9,
+    productId: "JLU264561U",
+    name: "Pret Casual Wear Suit",
+    mainCat: "Women",
+    subCat: "Ready to Wear",
+    price: 4200,
+    img: "/ready2.png.png",
+    hasSizes: true,
+    fabric: "Lawn",
+    season: "Summer Collection",
+    details: {
+      shirt: "Ready To Wear Lawn Shirt",
+      dupatta: "Printed Lawn Dupatta",
+      trouser: "Dyed Lawn Trouser",
+      addon: "4 Yards Lace"
+    }
+  },
 
-    // === FRAGRANCES MAIN CATEGORY ===
-    { id: 23, name: "Oud-Al-Rose Premium Pour Homme", mainCat: "Fragrances", subCat: "Men", price: 3200, img: "/frag_men1.png.png", hasSizes: false },
-    { id: 24, name: "Royal Musk Intense Eau De Parfum", mainCat: "Fragrances", subCat: "Men", price: 3500, img: "/frag_men2.png.png", hasSizes: false },
-    { id: 25, name: "Classic Gold Luxury Cologne", mainCat: "Fragrances", subCat: "Men", price: 2900, img: "/frag_men3.png.png", hasSizes: false },
-    
-    { id: 26, name: "Sweet Blossom Eau De Parfum", mainCat: "Fragrances", subCat: "Women", price: 2800, img: "/frag_women1.png.png", hasSizes: false },
-    { id: 27, name: "Jasmine Glow Luxury Scent", mainCat: "Fragrances", subCat: "Women", price: 3300, img: "/frag_women2.png.png", hasSizes: false },
-    { id: 28, name: "Velvet Petals Premium Perfume", mainCat: "Fragrances", subCat: "Women", price: 3600, img: "/frag_women3.png.png", hasSizes: false },
+  {
+    id: 10,
+    productId: "JLU264562U",
+    name: "Designer Ready To Wear Set",
+    mainCat: "Women",
+    subCat: "Ready to Wear",
+    price: 4800,
+    img: "/ready3.png.png",
+    hasSizes: true,
+    fabric: "Lawn",
+    season: "Summer Collection",
+    details: {
+      shirt: "Ready To Wear Lawn Shirt",
+      dupatta: "Printed Lawn Dupatta",
+      trouser: "Dyed Lawn Trouser",
+      addon: "4 Yards Lace"
+    }
+  },
 
-    // === FOOTWEAR MAIN CATEGORY ===
-    { id: 29, name: "Handcrafted Traditional Velvet Khussa", mainCat: "Footwear", subCat: "All", price: 2200, img: "/footwear1.png.png", hasSizes: false },
-    { id: 30, name: "Embroidered Regal Bridal Footwear", mainCat: "Footwear", subCat: "All", price: 2800, img: "/footwear2.png.png", hasSizes: false },
-    { id: 31, name: "Premium Casual Leather Khussa", mainCat: "Footwear", subCat: "All", price: 2500, img: "/footwear3.png.png", hasSizes: false }
+  // === MEN MAIN CATEGORY ===
+{ 
+      id: 15, 
+      name: "Men Premium Stitched Kurta (Navy)", 
+      mainCat: "Men", 
+      subCat: "Stitched", 
+      price: 3500, 
+      img: "/men_stitched1.png.png", 
+      hasSizes: true 
+    },
+
+    { 
+      id: 16, 
+      name: "Men Luxury Shalwar Kameez (White)", 
+      mainCat: "Men", 
+      subCat: "Stitched", 
+      price: 4500, 
+      img: "/men_stitched2.png.png", 
+      hasSizes: true 
+    },
+
+    { 
+      id: 17, 
+      name: "Men Designer Stitched Suit (Black)", 
+      mainCat: "Men", 
+      subCat: "Stitched", 
+      price: 4200, 
+      img: "/men_stitched3.png.png", 
+      hasSizes: true 
+    },
+     { 
+      id: 18, 
+      name: "Men Unstitched Soft Summer Cotton", 
+      mainCat: "Men", 
+      subCat: "Unstitched", 
+      price: 3200, 
+      img: "/men_unstitched1.png.png", 
+      hasSizes: false 
+    },
+
+    { 
+      id: 19, 
+      name: "Men Unstitched Premium Wash & Wear", 
+      mainCat: "Men", 
+      subCat: "Unstitched", 
+      price: 3800, 
+      img: "/men_unstitched2.png.png", 
+      hasSizes: false 
+    },
+
+    { 
+      id: 20, 
+      name: "Men Unstitched Premium Fabric", 
+      mainCat: "Men", 
+      subCat: "Unstitched", 
+      price: 3600, 
+      img: "/men_unstitched3.png.png", 
+      hasSizes: false 
+    },
+
+    { 
+      id: 21, 
+      name: "Men Unstitched Luxury Collection", 
+      mainCat: "Men", 
+      subCat: "Unstitched", 
+      price: 4000, 
+      img: "/men_unstitched4.png.png", 
+      hasSizes: false 
+    },
+
+    {
+      id: 22,
+      name: "Men Winter Woolen Shawl Kurta",
+      mainCat: "Men",
+      subCat: "Winter Collection",
+      price: 4800,
+      img: "/men_winter1.png.png",
+      hasSizes: true
+},
+    {
+  id: 23,
+  name: "Men Premium Winter Khaddar Suit",
+  mainCat: "Men",
+  subCat: "Winter Collection",
+  price: 4100,
+  img: "/men_winter2.png.png",
+  hasSizes: true
+},
+
+{
+  id: 24,
+  name: "Men Imperial Winter Tweed Suit",
+  mainCat: "Men",
+  subCat: "Winter Collection",
+  price: 5200,
+  img: "/men_winter3.png.png",
+  hasSizes: true
+},
+  // === FRAGRANCES MAIN CATEGORY ===
+
+ { 
+      id: 25, 
+      name: "Oud-Al-Rose Premium Pour Homme", 
+      mainCat: "Fragrances", 
+      subCat: "Men", 
+      price: 3200, 
+      img: "/frag_men1.png.png", 
+      hasSizes: false 
+    },
+
+    { 
+      id: 26, 
+      name: "Royal Musk Intense Eau De Parfum", 
+      mainCat: "Fragrances", 
+      subCat: "Men", 
+      price: 3500, 
+      img: "/frag_men2.png.png", 
+      hasSizes: false 
+    },
+
+    { 
+      id: 27, 
+      name: "Classic Gold Luxury Cologne", 
+      mainCat: "Fragrances", 
+      subCat: "Men", 
+      price: 2900, 
+      img: "/frag_men3.png.png", 
+      hasSizes: false 
+    },
+    // === FRAGRANCES WOMEN CATEGORY ===
+{ 
+      id: 28, 
+      name: "Sweet Blossom Eau De Parfum", 
+      mainCat: "Fragrances", 
+      subCat: "Women", 
+      price: 2800, 
+      img: "/frag_women1.png.png", 
+      hasSizes: false 
+    },
+
+    { 
+      id: 29, 
+      name: "Jasmine Glow Luxury Scent", 
+      mainCat: "Fragrances", 
+      subCat: "Women", 
+      price: 3300, 
+      img: "/frag_women2.png.png", 
+      hasSizes: false 
+    },
+
+    { 
+      id: 30, 
+      name: "Velvet Petals Premium Perfume", 
+      mainCat: "Fragrances", 
+      subCat: "Women", 
+      price: 3600, 
+      img: "/frag_women3.png.png", 
+      hasSizes: false 
+    },
+
+  // === FOOTWEAR MAIN CATEGORY ===
+
+   { 
+      id: 31, 
+      name: "Handcrafted Traditional Velvet Khussa", 
+      mainCat: "Footwear", 
+      subCat: "All", 
+      price: 2200, 
+      img: "/footwear1.png.png", 
+      hasSizes: false 
+    },
+
+    { 
+      id: 32, 
+      name: "Embroidered Regal Bridal Footwear", 
+      mainCat: "Footwear", 
+      subCat: "All", 
+      price: 2800, 
+      img: "/footwear2.png.png", 
+      hasSizes: false 
+    },
+
+    { 
+      id: 33, 
+      name: "Premium Casual Leather Khussa", 
+      mainCat: "Footwear", 
+      subCat: "All", 
+      price: 2500, 
+      img: "/footwear3.png.png", 
+      hasSizes: false 
+    }
+
   ];
 
-  const getSubTabs = () => {
+const getSubTabs = () => {
   if (activeTab === 'Women')
     return ['All', 'Coords', 'Unstitched', 'Ready to Wear'];
 
@@ -125,6 +481,10 @@ function App() {
   const cartCount = cart.reduce((c, i) => c + i.qty, 0);
 
   return (
+  <BrowserRouter basename={appBase}>
+
+    <Routes>
+      <Route path="/" element={
     <div className="min-h-screen bg-pink-50 text-gray-800 font-sans w-full overflow-x-hidden relative">
       
       {/* Top Banner */}
@@ -210,7 +570,7 @@ function App() {
       {/* Hero Section */}
 <section className="relative w-full overflow-hidden">
  <img
-  src="/main_banner1.jpg.png"
+  src={getImagePath("/main_banner1.jpg.jpg")}
   alt="LA-ROSE Banner"
   className="w-full h-[220px] sm:h-[320px] md:h-[450px] lg:h-[550px] object-cover"
 />
@@ -285,15 +645,19 @@ function App() {
                   
                   {/* Fixed standard aspect ratio block handling layout safely across phone screens */}
                   <div className="w-full aspect-[3/4] bg-gray-50 overflow-hidden relative">
-                    <img 
-                      src={product.img} 
-                      alt={product.name} 
-                      className="w-full h-full object-cover object-top group-hover:scale-102 transition-transform duration-300"
-                    />
-                    <span className="absolute top-2 left-2 bg-white/95 text-pink-600 text-[9px] uppercase font-black px-2 py-0.5 rounded-full shadow-xs">
-                      {product.subCat === 'All' ? product.mainCat : product.subCat}
-                    </span>
-                  </div>
+                    <Link to={`/product/${product.id}`}>
+                      <img
+                  src={getImagePath(product.img)}
+                  alt={product.name}
+                  className="w-full h-full object-cover cursor-pointer"
+                      />
+                    </Link>
+
+             <span className="absolute top-2 left-2 bg-white/95 text-pink-600 text-[9px] uppercase font-black px-2 py-0.5 rounded-full shadow-xs">
+              {product.subCat === 'All' ? product.mainCat : product.subCat}
+            </span>
+                 </div>
+                    
 
                   <div className="p-3 flex flex-col flex-grow text-left">
                     <h4 className="font-bold text-gray-800 mb-1 text-[11px] md:text-sm line-clamp-2">
@@ -487,7 +851,7 @@ function App() {
                 wishlist.map(item => (
                   <div key={item.id} className="flex gap-3 pb-3 border-b border-gray-50 items-center justify-between text-left">
                     <div className="flex gap-2.5 items-center">
-                      <img src={item.img} alt={item.name} className="w-10 h-14 object-cover rounded-md bg-gray-50" />
+                      <img src={getImagePath(item.img)} alt={item.name} className="w-10 h-14 object-cover rounded-md bg-gray-50" />
                       <div>
                         <h5 className="text-xs font-bold text-gray-800 line-clamp-1">{item.name}</h5>
                         <p className="text-xs font-black text-pink-600">Rs. {item.price.toLocaleString()}</p>
@@ -525,7 +889,7 @@ function App() {
               ) : (
                 cart.map((item, idx) => (
                   <div key={`${item.id}-${item.size}-${idx}`} className="flex gap-3 pb-3 border-b border-gray-50 items-center text-left">
-                    <img src={item.img} alt={item.name} className="w-10 h-14 object-cover rounded-md bg-gray-50" />
+                    <img src={getImagePath(item.img)} alt={item.name} className="w-10 h-14 object-cover rounded-md bg-gray-50" />
                     <div className="flex-grow">
                       <h5 className="text-xs font-bold text-gray-800 line-clamp-1">{item.name}</h5>
                       <p className="text-[10px] inline-block bg-pink-100 text-pink-700 font-bold px-2 py-0.5 rounded-sm my-1">Size: {item.size}</p>
@@ -579,6 +943,50 @@ function App() {
           ✅ Order Placed Successfully! Thank you for shopping with LA-rose.
         </div>
       )}
+      {/* Product Details Modal */}
+{selectedProduct && (
+  <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div className="bg-white rounded-xl max-w-md w-full p-4 relative">
+
+      <button
+        onClick={() => setSelectedProduct(null)}
+        className="absolute top-2 right-3 text-xl font-bold"
+      >
+        ✕
+      </button>
+
+      <img
+        src={getImagePath(selectedProduct.img)}
+        alt={selectedProduct.name}
+        className="w-full h-80 object-cover rounded-lg"
+      />
+
+      <h2 className="text-xl font-bold mt-4">
+        {selectedProduct.name}
+      </h2>
+
+      <p className="text-pink-600 font-bold mt-2">
+        Rs. {selectedProduct.price}
+      </p>
+
+      <p className="mt-2 text-gray-600">
+        Category: {selectedProduct.mainCat}
+      </p>
+
+      <p className="text-gray-600">
+        Type: {selectedProduct.subCat}
+      </p>
+
+      <button
+        onClick={() => addToCart(selectedProduct)}
+        className="w-full mt-4 bg-pink-600 text-white py-2 rounded-lg"
+      >
+        Add To Bag
+      </button>
+
+    </div>
+  </div>
+)}
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-500 text-center py-6 text-xs mt-12">
@@ -586,7 +994,17 @@ function App() {
         <p className="opacity-60 text-[11px]">&copy; 2026 LA-rose Essentials. All rights reserved.</p>
       </footer>
     </div>
-  );
+          } />
+
+      <Route
+        path="/product/:id"
+        element={<ProductDetail products={allProducts} />}
+      />
+    </Routes>
+
+  </BrowserRouter>
+);
+
 }
 
 export default App;
