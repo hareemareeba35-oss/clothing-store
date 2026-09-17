@@ -1003,6 +1003,8 @@ const getSubTabs = () => {
     </Routes>
 
   </BrowserRouter>
-);
+  );
+
+}
 
 export default App;
