@@ -619,96 +619,58 @@ const getSubTabs = () => {
       )}
 
       {/* Products Grid */}
-      <main
+     {/* Products Grid */}
+<main
   id="products-section"
   className="max-w-7xl mx-auto px-4 py-8"
 >
-        <h3 className="text-base md:text-2xl font-serif font-bold mb-1 text-gray-900 text-center uppercase tracking-wider">
-          {searchQuery ? `Results for "${searchQuery}"` : activeTab === 'All' ? 'Our Best Sellers' : `${activeTab} ${activeSubTab !== 'All' ? `> ${activeSubTab}` : ''}`}
-        </h3>
-        <div className="w-8 h-0.5 bg-pink-600 mx-auto mb-6 rounded-full"></div>
-        
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-12 text-gray-400 text-xs">Koi product nahi mili. Dobara search karein!</div>
-        ) : (
-          /* Strictly safe responsive row grids: 2 cards on mobile, 3 on tablets, 4 on desktop layout viewports */
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
-    {filteredProducts.map((product) => {
-      const isInWishlist = wishlist.some(item => item.id === product.id);
-      const currentSize = selectedSizes[product.id] || 'Medium';
+  <h3 className="text-base md:text-2xl font-serif font-bold mb-1 text-gray-900 text-center uppercase tracking-wider">
+    {searchQuery
+      ? `Results for "${searchQuery}"`
+      : activeTab === 'All'
+        ? 'Our Best Sellers'
+        : `${activeTab} ${activeSubTab !== 'All' ? `> ${activeSubTab}` : ''}`}
+  </h3>
 
-              return (
-               <div
-  key={product.id}
-  className="bg-white rounded-xl shadow-xs border border-pink-100 flex flex-col w-full"
-> 
-                  
-                  {/* Fixed standard aspect ratio block handling layout safely across phone screens */}
-                  <div className="w-full aspect-[3/4] bg-gray-50 overflow-hidden relative">
-                    <Link to={`/product/${product.id}`}>
-                      <img
-                  src={getImagePath(product.img)}
-                  alt={product.name}
-                  className="w-full h-full object-cover cursor-pointer"
-                      />
-                    </Link>
+  <div className="w-8 h-0.5 bg-pink-600 mx-auto mb-6 rounded-full"></div>
 
-             <span className="absolute top-2 left-2 bg-white/95 text-pink-600 text-[9px] uppercase font-black px-2 py-0.5 rounded-full shadow-xs">
-              {product.subCat === 'All' ? product.mainCat : product.subCat}
-            </span>
-                 </div>
-                    
+  {filteredProducts.length === 0 ? (
+    <div className="text-center py-12 text-gray-400 text-xs">
+      Koi product nahi mili. Dobara search karein!
+    </div>
+  ) : (
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
 
-                  <div className="p-3 flex flex-col flex-grow text-left">
-                    <h4 className="font-bold text-gray-800 mb-1 text-[11px] md:text-sm line-clamp-2">
-                      {product.name}
-                    </h4>
-                    
-                    
-                    {/* Size Selector */}
-                    {product.hasSizes && (
-                      <div className="mb-3">
-                        <label className="text-[9px] font-black uppercase text-gray-400 block mb-1">Size:</label>
-                        <select 
-                          value={currentSize}
-                          onChange={(e) => handleSizeChange(product.id, e.target.value)}
-                          className="w-full p-1.5 rounded-md border border-pink-100 text-xs bg-pink-50/30 text-gray-700 outline-none font-bold"
-                        >
-                          <option value="Small">Small</option>
-                          <option value="Medium">Medium</option>
-                          <option value="Large">Large</option>
-                          <option value="XL">XL</option>
-                        </select>
-                      </div>
-                    )}
+      {filteredProducts.map((product) => (
+        <div
+          key={product.id}
+          className="bg-white rounded-xl shadow-xs border border-pink-100 overflow-hidden"
+        >
 
-                    {/* Actions Panel */}
-                    <div className="grid grid-cols-1 gap-1.5 mt-auto pt-2 border-t border-gray-50">
-                      <button 
-                        onClick={() => toggleWishlist(product)}
-                        className={`py-1.5 rounded-md text-xs font-bold transition-all text-center border ${
-                          isInWishlist 
-                            ? 'bg-rose-600 text-white border-rose-600' 
-                            : 'bg-rose-50 text-rose-600 border-rose-100 hover:bg-rose-100'
-                        }`}
-                      >
-                        {isInWishlist ? '♥ Liked' : '♥ Wishlist'}
-                      </button>
-                      <button 
-                        onClick={() => addToCart(product)}
-                        className="bg-pink-600 text-white hover:bg-pink-700 py-1.5 rounded-md text-xs font-bold text-center transition-all shadow-xs"
-                      >
-                        Add to Bag
-                      </button>
-                    </div>
+          {/* Product Image */}
+          <Link to={`/product/${product.id}`}>
+            <div className="w-full aspect-[3/4] bg-gray-50 overflow-hidden">
+              <img
+                src={getImagePath(product.img)}
+                alt={product.name}
+                className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          </Link>
 
-                  </div>
-                </div>
-              );
-            })}
+          {/* Price Only */}
+          <div className="p-3 text-left">
+            <p className="text-sm md:text-base font-bold text-gray-800">
+              Rs. {product.price.toLocaleString()}
+            </p>
           </div>
-        )}
-      </main>
+
+        </div>
+      ))}
+
+    </div>
+  )}
+</main>
       {/* Footer */}
 <footer className="bg-white border-t mt-16">
   <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-5 gap-8">
